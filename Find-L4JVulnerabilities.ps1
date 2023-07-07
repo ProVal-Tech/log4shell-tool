@@ -470,13 +470,18 @@ $arrFiles | Where-Object { $_ -match '\.jar$' } | ForEach-Object {
             $parentOfParentDirectory = $jndiManagerFile.Directory.Parent
             if (Test-Path "$parentOfParentDirectory\lookup\JndiLookup.class") {
                 #Write-Host "lookupclass file found on $_"
-                Write-Log -Text "! Alert: The MD5 hash for $jarfile was found in the bad list and the jndilookup.class file was verified to exist, this file needs to be patched." -Type WARN
+                Write-Log -Text "! Alert: The MD5 hash for $jarfile was found in the bad list and the jndilookup.class file was verified to exist at $parentOfParentDirectory\lookup\JndiLookup.class, this file needs to be patched." -Type WARN
+                $script:varDetection = 1
+            }
+            else {
+                #Write-Host "lookupclass file didn't found on $_"
+                Write-Log -Text "! Alert: The MD5 hash for $jarfile was found in the bad list but the jndilookup.class file doesn't exist." -Type WARN
                 $script:varDetection = 1
             }
         }
         elseif ($checksum -in $MD5_GOOD.keys) {
             Write-Log -Text "MD5 found in good list referencing $($MD5_BAD.$checksum)" -Type Log
-        }
+        }  
         else {
             Write-Log -Text 'MD5 was not found in any list' -Type Log
         }
@@ -549,8 +554,8 @@ else {
 # SIG # Begin signature block
 # MIInbQYJKoZIhvcNAQcCoIInXjCCJ1oCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAJV7grZeD+oMp7
-# 60KnRAQzWu89KYtrq4BGhzkhEGDqLKCCILUwggXYMIIEwKADAgECAhEA5CcElfaM
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBG68M279Uj3wB4
+# YbtTsiRavq970DGDIpvrgLYoStYJxKCCILUwggXYMIIEwKADAgECAhEA5CcElfaM
 # kdbQ7HtJTqTfHDANBgkqhkiG9w0BAQsFADB+MQswCQYDVQQGEwJQTDEiMCAGA1UE
 # ChMZVW5pemV0byBUZWNobm9sb2dpZXMgUy5BLjEnMCUGA1UECxMeQ2VydHVtIENl
 # cnRpZmljYXRpb24gQXV0aG9yaXR5MSIwIAYDVQQDExlDZXJ0dW0gVHJ1c3RlZCBO
@@ -730,32 +735,32 @@ else {
 # Y29tIENvZGUgU2lnbmluZyBJbnRlcm1lZGlhdGUgQ0EgUlNBIFIxAhB5XCTG7Piy
 # ewEA9fv+9trIMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAIoAKA
 # AKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEO
-# MAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIFFENpLXkzYTMooQPcAKOVMo
-# vEbpccChnGiIpqNXYFwqMA0GCSqGSIb3DQEBAQUABIIBgGIuWfUZiplmMP7b2UEi
-# fSUFbjxkKlxg8ScC+iAH6+KzrPMucj56HJh19Go+45XWAsU5g3s/9OUcVztMliNi
-# hnn3psFivZjdpUXYwrns1sB+2Q0KIij33llqu/0X7zUlke+qwijjCh0l23O4AaVo
-# yzUkYsnhy1fGOfiMUT0/iBmNLpox1pGtkeMd+Kp8ErNTm6bv0JuDy9Pg5htigkds
-# ZTnqFL/u0LrY/F6PoBMDu+q9W1nC1FUyvNUYWscB8rKBhhaluF9PWghQEtirc6aD
-# DfR1/p4ZYE/y4S3mtjvAW/2qvhdGZ5nj7BE4wB7rrd8oAUGsJIXx8KrlBzJrXUs0
-# fyfefLIb9ekLV2+JeEaWozpqx+zdx9v0SPMi8qhA4VUhHwfkQAdWmd1BEp0DrwRn
-# udfDGchMigHOQDp/MHibNIV0RsyWW1UIYeyGxuhfOB4lQIBTo46yPHThLAr/YhKA
-# Vguc5M6PpmAFGDn8actvgvG1xjjxQfCgoV+0cWshbNfB+KGCA0swggNHBgkqhkiG
+# MAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIM3ZSaEhab10Uu4RHA4wZ92u
+# eJiWkoIDgT59CfwlIFOqMA0GCSqGSIb3DQEBAQUABIIBgB0REXmCkO+YUrtsyQNf
+# xe4dx1jPeD3xKqAKpG5Qe8EhAqM9noX0KSBF1j4rX5L/SjxX+gOh6TZ8oAls8E+g
+# Vd8Hc2SIWIPcFN+W1e103uW2EyFaZACY4hmoOuelQmWaH2G9iWDHYC3waJW4gOZE
+# FdZywkrKvkd6VkjCimZLdIQswcEodplugT3xlDGzh4FLvlWS8WZUwyIcvCT6JjyW
+# 5wShoPo5NOATXGzoM+qNGxWXld8uXMqPnRhMy0iovAobxkuFKY0EM1zcnF15/z8h
+# 3apLFnC+LyVqA7FYKJMJbQaKM4CnHbyVI7QMa4O1h+bvQdHaYZNXi/sHdK0VFGNL
+# 09Y/G6nJzZdY3X86TLMz9TjmcDNOWe/p3jgb8l5/bIIh8FsjKcblyp2N2UkSOXrB
+# xfb4NlniLhuJiOW7+n9ROl4xIPwyGf6NBkq+SeLBySm4qcHUBy2yUksW5skDSW1A
+# 2aEgKBr/ceYKLxDr1bXWNbc2VPyMEPUgUYfi1WvmOtXwG6GCA0swggNHBgkqhkiG
 # 9w0BCQYxggM4MIIDNAIBATCBkTB9MQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
 # YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0
 # aWdvIExpbWl0ZWQxJTAjBgNVBAMTHFNlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcg
 # Q0ECEDlMJeF8oG0nqGXiO9kdItQwDQYJYIZIAWUDBAICBQCgeTAYBgkqhkiG9w0B
-# CQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMzA1MzAxNDQ0MjFaMD8G
-# CSqGSIb3DQEJBDEyBDDdYAwVYzPy2H9stl5F15HYiKL8wQvfN87k8W3/ycNFCEM0
-# sVQGXm6YhBIgM/uHUxAwDQYJKoZIhvcNAQEBBQAEggIAGCnrIIomQPwLN2BSlxHE
-# 6bskpbwYS378RT9h6A38H1YzvO0akjeEl3ZWtDO6/jINkw8WkTgYABG8b1D6bSkM
-# essm7XvwCQmbGhivmcHPB4j5TqJgbv43Lzs1J5rHirS8iAQ24xGV4OkJviXZRR4s
-# 5K1KGTxlcoihEiVHM/R1YoDdPKE6ucNvEnjZpG0fLAEPP0pKUkqjmhkzVWeys3m7
-# Fk6m4Aio7fLqmI9+3Ax7MgdCbVsqV/wIrPNY/Z7U1TwOPz6Xd1la5ZHIqQbfCEtU
-# l45wpyN7y0XuQFC8lgxT+7cC6YxFHEYLejKl95DlI2t6cfJF3Zmb5Xk1WJbYwPk8
-# dD/fmCnlnTC61e9fOCMjBxI5TwH0ltp/cwIdUijHrwuyrzAtiS26QquiwMxWXRZ8
-# i+kj6cKHekHVqGvk8OprE2gkfm5BF+e2MJ6zpheXsYRruijtG6hHHhyXDfmF1RHK
-# Aw3ocd7wgd44Q6BJze+fUx7eSuDWXDuj5RIwM5qMaHiob9CpA3P8XyWpjiSIr/qT
-# yvkWgRcoGQnfHDKskZrTP/kSNAQMX/7knQ2gKzWBD1qFTbnaVieto8NaMTX0cJZP
-# 1S2bim7DNZcMJP4VKOLXHeOj7GOY6lePHdrO5qhIiMvJVQtQr78ssx6TyJDZX/A/
-# h6KenGZK4T/+ZyR2wZxN6Jc=
+# CQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMzA3MDcxNjM2MDBaMD8G
+# CSqGSIb3DQEJBDEyBDAt4Yqr+FcmlAf+SiBXaiNywZkGECGGofR+xcR2tE3frGAA
+# I3TQGuWiZoH26QAYSDQwDQYJKoZIhvcNAQEBBQAEggIAf/B7BivP8eA4Tkompjjf
+# FUb87t7K1F9otRzS3ETor2z+wJhicHXOtjcGUi0+xinBPbQuB1tOZYOX30tjj07F
+# 2km0hQ/jkYaN28MPoiZDUnWn1Ue+GZxBwkGPBeJ1kWFaxtB1faGL70lKnDPHe3pS
+# c83tOXPlKRXuXk4Whbf217nVPBqVozTBN/g8Nv+0yqsNIclagdCbwY9ZzknrUgG6
+# dEv5NyCW2mLTXbbPZkB7VPA5PczQk4AO2qNTaKa8w+W2fzpQhO0oqlFner6RR4V1
+# OR202Bz9CdsaJycxnjGMR2w8iwClPBfovf5DFsSzzK0BFuF/QZyuEAT53r4m7qt1
+# M2kG1ibORTj662uri7/Y7sAd15lWTa5mN9XUqCH0OGNW16NxV6gQGBn3Ly7if2JS
+# 53jqZ8dcgkskg0w2lR2KEvoVHXOCgCuBeqQDN87KrIwRdfzFARSew2OOLY3kuNwR
+# ddI46S4peJXAqxVcD5Of6JDjWv9N0CqbJWwiSKANp6rV+dUhfZSvTIvJ4GCFn6Ib
+# O3NytPsdW+v4JfmjJijHBRNzy8cYqW+FRtFExwnGpU1Plrx/hQJ65Ii1l+bmvD2B
+# LbhN5STLw94r4iRyGt6NMa91RwYyEyy4U4HFVHBqTjuubbqTzQZwPMhyjRiDNbTs
+# n/YUwysFWGmz/WIdiTqbJJQ=
 # SIG # End signature block
